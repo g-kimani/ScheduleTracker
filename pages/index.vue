@@ -1,93 +1,154 @@
 <template>
-  <v-row justify="center" align="center">
-    <v-col cols="12" sm="8" md="6">
-      <div class="text-center">
-        <logo />
-        <vuetify-logo />
-      </div>
-      <v-card>
-        <v-card-title class="headline">
-          Welcome to the Vuetify + Nuxt.js template
-        </v-card-title>
-        <v-card-text>
-          <p>
-            Vuetify is a progressive Material Design component framework for
-            Vue.js. It was designed to empower developers to create amazing
-            applications.
-          </p>
-          <p>
-            For more information on Vuetify, check out the
-            <a
-              href="https://vuetifyjs.com"
-              target="_blank"
-              rel="noopener noreferrer"
+  <div>
+    <v-row>
+      <v-col cols="4">
+        <v-card>
+          <v-card-title> Upcoming events </v-card-title>
+          <event-card v-for="card in 5" :key="card" />
+        </v-card>
+      </v-col>
+      <v-col cols="8">
+        <calendar :events="events" />
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <v-card>
+          <v-card-title> Active Schedules </v-card-title>
+          <v-tabs v-model="scheduletab">
+            <v-tabs-slider color="yellow"></v-tabs-slider>
+            <v-tab
+              v-for="schedulegroup in schedulegroups"
+              :key="schedulegroup.id"
             >
-              documentation </a
-            >.
-          </p>
-          <p>
-            If you have questions, please join the official
-            <a
-              href="https://chat.vuetifyjs.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="chat"
+              {{ schedulegroup.title }}
+            </v-tab>
+          </v-tabs>
+          <v-tabs-items v-model="scheduletab">
+            <v-tab-item
+              v-for="schedulegroup in schedulegroups"
+              :key="schedulegroup.id"
             >
-              discord </a
-            >.
-          </p>
-          <p>
-            Find a bug? Report it on the github
-            <a
-              href="https://github.com/vuetifyjs/vuetify/issues"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="contribute"
-            >
-              issue board </a
-            >.
-          </p>
-          <p>
-            Thank you for developing with Vuetify and I look forward to bringing
-            more exciting features in the future.
-          </p>
-          <div class="text-xs-right">
-            <em><small>&mdash; John Leider</small></em>
-          </div>
-          <hr class="my-3" />
-          <a
-            href="https://nuxtjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt Documentation
-          </a>
-          <br />
-          <a
-            href="https://github.com/nuxt/nuxt.js"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt GitHub
-          </a>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn color="primary" nuxt to="/inspire"> Continue </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-col>
-  </v-row>
+              <schedule-card
+                v-for="scheduleindex in schedulegroup.schedules"
+                :key="scheduleindex"
+                :schedule="schedules[scheduleindex]"
+              />
+            </v-tab-item>
+          </v-tabs-items>
+        </v-card>
+      </v-col>
+    </v-row>
+  </div>
 </template>
 
 <script>
-import Logo from '~/components/Logo.vue'
-import VuetifyLogo from '~/components/VuetifyLogo.vue'
-
+import Calendar from '~/components/Calendar.vue'
+import ScheduleCard from '~/components/ScheduleCard.vue'
 export default {
-  components: {
-    Logo,
-    VuetifyLogo,
+  components: { Calendar, ScheduleCard },
+  data() {
+    return {
+      scheduletab: null,
+      events: [
+        {
+          id: 1,
+          name: 'Event 1',
+          start: '2021-05-10T10:00:00',
+          end: '2021-05-10T15:00:00',
+          color: 'blue',
+          timed: true,
+        },
+        {
+          id: 2,
+          name: 'Event 2',
+          start: '2021-05-12T11:00:00',
+          end: '2021-05-12T14:00:00',
+          color: 'blue',
+          timed: true,
+        },
+        {
+          id: 3,
+          name: 'Event 3',
+          start: '2021-05-15T10:00:00',
+          end: '2021-05-15T11:00:00',
+          color: 'blue',
+          timed: true,
+        },
+        {
+          id: 4,
+          name: 'Event 4',
+          start: '2021-05-19T10:00:00',
+          end: '2021-05-19T12:00:00',
+          color: 'blue',
+          timed: true,
+        },
+      ],
+      schedulegroups: [
+        {
+          id: 1,
+          title: 'Revision',
+          schedules: [0, 1, 2],
+        },
+        {
+          id: 2,
+          title: 'Exercise',
+          schedules: [3],
+        },
+      ],
+      schedules: [
+        {
+          id: 1,
+          title: 'Maths',
+          sessionsPerWeek: 3,
+          lengthOfSession: 2,
+          start: '2021-05-10T10:00:00',
+          end: '2021-05-10T17:00:00',
+          minStartHour: 8,
+          maxEndHour: 18,
+          priority: 1,
+          active: true,
+        },
+        {
+          id: 2,
+          title: 'English',
+          sessionsPerWeek: 4,
+          lengthOfSession: 2,
+          start: '2021-05-11T13:00:00',
+          end: '2021-05-10T17:00:00',
+          minStartHour: 10,
+          maxEndHour: 19,
+          priority: 1,
+          active: false,
+        },
+        {
+          id: 3,
+          title: 'Science',
+          sessionsPerWeek: 3,
+          lengthOfSession: 1,
+          start: '2021-05-10T10:00:00',
+          end: '2021-05-10T17:00:00',
+          minStartHour: 8,
+          maxEndHour: 18,
+          priority: 1,
+          active: true,
+        },
+        {
+          id: 4,
+          title: 'Running',
+          sessionsPerWeek: 3,
+          lengthOfSession: 1,
+          start: '2021-05-10T10:00:00',
+          end: '2021-05-10T17:00:00',
+          minStartHour: 8,
+          maxEndHour: 18,
+          priority: 1,
+          active: true,
+        },
+      ],
+    }
   },
 }
 </script>
+
+<style lang="scss" scoped></style>
