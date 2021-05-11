@@ -3,6 +3,8 @@
     <v-card>
       <v-card-title>
         {{ schedule.title }}
+        <v-spacer></v-spacer>
+        <edit-actions />
       </v-card-title>
       <v-card-subtitle>
         {{ schedule.active ? 'Schedule active' : 'Schedule inactive' }}
@@ -50,7 +52,9 @@
 </template>
 
 <script>
+import EditActions from '../EditActions.vue'
 export default {
+  components: { EditActions },
   props: {
     schedule: {
       type: Object,

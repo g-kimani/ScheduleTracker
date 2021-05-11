@@ -15,6 +15,9 @@
       <v-col>
         <schedules-tabs :schedulegroups="schedulegroups" />
       </v-col>
+      <v-col>
+        <goals-card v-for="goal in goals" :key="goal.id" :goal="goal" />
+      </v-col>
     </v-row>
   </div>
 </template>
@@ -23,16 +26,17 @@
 import { mapState } from 'vuex'
 import Calendar from '~/components/Calendar.vue'
 import EventCard from '~/components/Events/EventCard.vue'
+import GoalsCard from '~/components/Goals/GoalsCard.vue'
 import SchedulesTabs from '~/components/Schedules/SchedulesTabs.vue'
 export default {
-  components: { Calendar, EventCard, SchedulesTabs },
+  components: { Calendar, EventCard, SchedulesTabs, GoalsCard },
   data() {
     return {
       scheduletab: null,
     }
   },
   computed: {
-    ...mapState(['events', 'schedulegroups', 'schedules']),
+    ...mapState(['events', 'schedulegroups', 'schedules', 'goals']),
   },
 }
 </script>
