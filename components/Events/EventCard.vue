@@ -1,18 +1,18 @@
 <template>
   <div>
-    <v-card :color="colors[events[0].priority]">
+    <v-card :color="colors[event.priority]" flat>
       <v-card-title>
-        {{ events[0].title }}
+        {{ event.title }}
       </v-card-title>
       <v-card-text>
         <v-row>
           <v-col>
             <v-subheader> Event Start </v-subheader>
-            {{ parseEventDate(events[0].start) }}
+            {{ parseEventDate(event.start) }}
           </v-col>
           <v-col>
             <v-subheader> Event end </v-subheader>
-            {{ parseEventDate(events[0].end) }}
+            {{ parseEventDate(event.end) }}
           </v-col>
         </v-row>
       </v-card-text>
@@ -22,6 +22,12 @@
 
 <script>
 export default {
+  props: {
+    event: {
+      type: Object,
+      required: true,
+    },
+  },
   data() {
     return {
       colors: [
@@ -32,14 +38,6 @@ export default {
         'green',
         'orange',
         'grey darken-1',
-      ],
-      events: [
-        {
-          title: 'Event1',
-          start: '2021-05-10T10:00:00',
-          end: '2021-05-10T13:00:00',
-          priority: 1,
-        },
       ],
     }
   },

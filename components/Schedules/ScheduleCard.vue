@@ -21,9 +21,10 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn icon @click="show = !show">
-          Details
-          <v-icon>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+        <v-btn tile text @click="show = !show">
+          Details<v-icon color="white">{{
+            show ? 'mdi-chevron-up' : 'mdi-chevron-down'
+          }}</v-icon>
         </v-btn>
       </v-card-actions>
       <v-expand-transition>
