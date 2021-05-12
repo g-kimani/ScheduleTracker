@@ -9,7 +9,12 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col> </v-col>
+      <v-col>
+        <upcoming-events-card :events="events" />
+      </v-col>
+      <v-col>
+        <attendance-card :events="revisionEvents" />
+      </v-col>
     </v-row>
   </div>
 </template>
@@ -17,9 +22,10 @@
 <script>
 import { mapState } from 'vuex'
 import Calendar from '~/components/Calendar.vue'
+import UpcomingEventsCard from '~/components/Events/UpcomingEventsCard.vue'
 import ActiveSchedulesCard from '~/components/Schedules/ActiveSchedulesCard.vue'
 export default {
-  components: { Calendar, ActiveSchedulesCard },
+  components: { Calendar, ActiveSchedulesCard, UpcomingEventsCard },
   computed: {
     ...mapState(['revisionschedules', 'events']),
     activeSchedules() {

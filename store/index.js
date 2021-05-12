@@ -145,7 +145,7 @@ export const state = () => ({
       deadline: '2021-05-25T17:00:00',
     },
   ],
-  attendace: [
+  attendance: [
     {
       id: 1,
       eventid: 1,
@@ -196,7 +196,7 @@ export const getters = {
   getScheduleEvents: (state) => (id) => {
     const events = []
     state.events.forEach((event) => {
-      if (event.scheduleid === id) {
+      if (event.scheduleid === parseInt(id)) {
         events.push(event)
       }
     })
@@ -222,10 +222,14 @@ export const getters = {
       )
       if (schedule) {
         if (schedule.active === true) {
-          activeSchedules.push(schedule)
+          activeSchedules.push(rschedule)
         }
       }
     })
     return activeSchedules
+  },
+  getEventAttendance: (state) => (id) => {
+    const event = state.attendance.find((item) => item.eventid === id)
+    return event.did_attend
   },
 }

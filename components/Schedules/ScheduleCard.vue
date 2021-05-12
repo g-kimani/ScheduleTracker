@@ -2,7 +2,9 @@
   <div>
     <v-card>
       <v-card-title>
-        {{ schedule.title }}
+        <nuxt-link :to="`/schedules/${schedule.id}`">
+          {{ schedule.title }}</nuxt-link
+        >
         <v-spacer></v-spacer>
         <edit-actions />
       </v-card-title>
