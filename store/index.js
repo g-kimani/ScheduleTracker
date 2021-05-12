@@ -7,6 +7,7 @@ export const state = () => ({
       end: '2021-05-10T15:00:00',
       color: 'blue',
       timed: true,
+      scheduleid: 1,
     },
     {
       id: 2,
@@ -15,6 +16,7 @@ export const state = () => ({
       end: '2021-05-12T14:00:00',
       color: 'blue',
       timed: true,
+      scheduleid: 2,
     },
     {
       id: 3,
@@ -23,6 +25,7 @@ export const state = () => ({
       end: '2021-05-15T11:00:00',
       color: 'blue',
       timed: true,
+      scheduleid: 4,
     },
     {
       id: 4,
@@ -31,6 +34,7 @@ export const state = () => ({
       end: '2021-05-19T12:00:00',
       color: 'blue',
       timed: true,
+      scheduleid: 3,
     },
     {
       id: 5,
@@ -39,6 +43,7 @@ export const state = () => ({
       end: '2021-05-23T12:00:00',
       color: 'blue',
       timed: true,
+      scheduleid: 2,
     },
   ],
   schedulegroups: [
@@ -90,7 +95,7 @@ export const state = () => ({
       active: true,
     },
   ],
-  repeatschedules: [
+  revisionschedules: [
     {
       id: 1,
       sessionsPerWeek: 4,
@@ -120,7 +125,7 @@ export const state = () => ({
     {
       id: 1,
       title: 'Maths Exam',
-      repeatscheduleid: 1,
+      revisionscheduleid: 1,
       examdate: '2021-05-30T17:00:00',
     },
   ],
@@ -187,5 +192,40 @@ export const getters = {
   },
   getScheduleGroupById: (state) => (id) => {
     return state.schedulegroups.find((group) => group.id === parseInt(id))
+  },
+  getScheduleEvents: (state) => (id) => {
+    const events = []
+    state.events.forEach((event) => {
+      if (event.scheduleid === id) {
+        events.push(event)
+      }
+    })
+    return events
+  },
+  getActiveRevisionScheduleEvents: (state) => () => {
+    const allEvents = []
+    state.revisionschedules.forEach((rschedule) => {
+      const schedule = state.schedules.find(
+        (schedule) => schedule.id === rschedule.scheduleid
+      )
+      if (schedule.active === true) {
+        allEvents.push()
+      }
+    })
+    return allEvents
+  },
+  getActiveRevisionSchedules: (state) => () => {
+    const activeSchedules = []
+    state.revisionschedules.forEach((rschedule) => {
+      const schedule = state.schedules.find(
+        (schedule) => schedule.id === rschedule.scheduleid
+      )
+      if (schedule) {
+        if (schedule.active === true) {
+          activeSchedules.push(schedule)
+        }
+      }
+    })
+    return activeSchedules
   },
 }
