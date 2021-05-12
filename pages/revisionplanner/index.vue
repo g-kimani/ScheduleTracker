@@ -29,7 +29,15 @@ export default {
   computed: {
     ...mapState(['revisionschedules', 'events']),
     activeSchedules() {
-      return this.$store.getters.getActiveRevisionSchedules()
+      const activeSchedules = []
+      const revisionschedules = this.$store.getters.getActiveRevisionSchedules()
+      revisionschedules.forEach((rschedule) => {
+        const schedule = this.$store.getters.getScheduleById(
+          rschedule.scheduleid
+        )
+        activeSchedules.push(schedule)
+      })
+      return activeSchedules
     },
     revisionEvents() {
       const allEvents = []
