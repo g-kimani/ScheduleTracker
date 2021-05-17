@@ -15,7 +15,7 @@
         <v-icon v-else> mdi-pencil </v-icon>
       </v-btn>
     </template>
-    <v-btn v-if="edit !== null" fab dark small color="green">
+    <v-btn v-if="edit !== null" :to="`${edit}`" fab dark small color="green">
       <v-icon>mdi-pencil</v-icon>
     </v-btn>
     <v-btn v-if="create !== null" fab dark small color="indigo">
@@ -30,7 +30,7 @@
 export default {
   props: {
     edit: {
-      type: Function,
+      type: String,
       default() {
         return null
       },

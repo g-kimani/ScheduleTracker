@@ -18,7 +18,14 @@
     <v-btn v-if="edit !== null" fab dark small color="green">
       <v-icon>mdi-pencil</v-icon>
     </v-btn>
-    <v-btn v-if="create !== null" fab dark small color="indigo">
+    <v-btn
+      v-if="create !== null"
+      to="/revisionplanner"
+      fab
+      dark
+      small
+      color="indigo"
+    >
       <v-icon>mdi-plus</v-icon>
     </v-btn>
     <v-btn v-if="remove" fab dark small color="red" @click="remove">

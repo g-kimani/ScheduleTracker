@@ -1,4 +1,4 @@
-export const state = () => ({
+const state = () => ({
   events: [
     {
       id: 1,
@@ -172,9 +172,21 @@ export const state = () => ({
       did_attend: false,
     },
   ],
+  colors: [
+    'blue',
+    'indigo',
+    'deep-purple',
+    'cyan',
+    'green',
+    'orange',
+    'grey darken-1',
+  ],
 })
 
-export const getters = {
+const getters = {
+  getGoalById: (state) => (id) => {
+    return state.goals.find((goal) => goal.id === parseInt(id))
+  },
   getEvents: (state) => () => {
     return state.events
   },
@@ -232,4 +244,30 @@ export const getters = {
     const event = state.attendance.find((item) => item.eventid === id)
     return event.did_attend
   },
+  getColors: (state) => {
+    return state.colors
+  },
+}
+
+const actions = {
+  setEventAttended({ state, commit }, payload) {
+    return new Promise((resolve, reject) => {
+      commit('SET_ATTENDED', payload)
+      resolve()
+    })
+  },
+}
+
+const mutations = {
+  SET_ATTENDED(state, payload) {
+    const event = state.attendance.find((event) => event.eventid === payload.id)
+    event.did_attend = payload.data
+  },
+}
+
+export default {
+  state,
+  getters,
+  actions,
+  mutations,
 }

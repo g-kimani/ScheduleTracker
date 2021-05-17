@@ -2,7 +2,7 @@
   <div>
     <v-card :color="colors[event.priority]" flat>
       <v-card-title>
-        {{ event.title }}
+        {{ event.name }}
       </v-card-title>
       <v-card-text>
         <v-row>

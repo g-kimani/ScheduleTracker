@@ -89,14 +89,12 @@ export default {
       }
       return out
     },
-    randomRange(a, b) {
-      return Math.floor((b - a + 1) * Math.random() + a)
+    randomRange(min, max) {
+      return Math.floor((max - min + 1) * Math.random() + min)
     },
     generateRevision() {
       const currentDay = new Date(this.dates[0])
       const revisionEnd = new Date(`${this.dates[1]}T23:59:59`)
-      const minTime = this.minHours
-      const maxTime = this.maxHours
       //   console.log(currentDay)
 
       const revisionEvents = []
@@ -111,33 +109,31 @@ export default {
         let placed = false
 
         while (!placed) {
-          const startTime = this.randomRange(minTime, maxTime)
+          console.log(typeof this.minHours)
+          const startTime = this.randomRange(
+            parseInt(this.minHours),
+            parseInt(this.maxHours)
+          )
+          console.log(startTime)
           const endTime = startTime + this.lengthOfSession
 
           startDay.setHours(startTime)
           endDay.setHours(endTime)
+          // console.log(startDay)
 
-          //   if (this.checkTimeFree(startDay, endDay)) {
-          //     if (days.includes(currentDay.getDay())) {
-          //       revisionEvents.push({
-          //         name: this.title,
-          //         start: startDay,
-          //         end: endDay,
-          //         color: 'blue',
-          //         timed: true,
-          //       })
-          //     }
-          //     placed = true
-          //   }
-          if (days.includes(currentDay.getDay())) {
-            revisionEvents.push({
-              name: this.title,
-              start: startDay,
-              end: endDay,
-              color: 'blue',
-              timed: true,
-            })
+          if (this.checkTimeFree(startDay, endDay)) {
+            if (days.includes(currentDay.getDay())) {
+              revisionEvents.push({
+                name: this.title,
+                start: startDay,
+                end: endDay,
+                color: 'blue',
+                timed: true,
+              })
+            }
+            placed = true
           }
+
           placed = true
         }
         currentDay.setDate(currentDay.getDate() + 1)
@@ -146,19 +142,16 @@ export default {
       this.$emit('scheduleCreated', revisionEvents)
     },
     checkTimeFree(start, end) {
-      console.log(start, end)
-      for (const e in this.events) {
-        console.log(this.events[e].start.getTime())
-        console.log(this.events[e].start)
+      this.events.forEach((event) => {
+        const checkStart = new Date(event.start)
+        const checkEnd = new Date(event.end)
         if (
-          (start.getTime() >= this.events[e].start.getTime() &&
-            start.getTime() < this.events[e].end.getTime()) ||
-          (end.getTime() >= this.events[e].start.getTime() &&
-            end.getTime() < this.events[e].end.getTime())
+          checkStart.getTime() <= start.getTime() < checkEnd.getTime() ||
+          checkStart.getTime() < end.getTime() < checkEnd.getTime()
         ) {
           return false
         }
-      }
+      })
       return true
     },
   },

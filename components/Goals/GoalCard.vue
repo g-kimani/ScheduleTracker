@@ -2,7 +2,7 @@
   <div>
     <v-card>
       <v-card-title>
-        {{ goal.title }}
+        <nuxt-link :to="`/goals/${goal.id}`"> {{ goal.title }}</nuxt-link>
         <v-spacer></v-spacer>
         <edit-actions />
       </v-card-title>

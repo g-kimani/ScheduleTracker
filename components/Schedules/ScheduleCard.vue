@@ -6,7 +6,7 @@
           {{ schedule.title }}</nuxt-link
         >
         <v-spacer></v-spacer>
-        <edit-actions />
+        <edit-actions :edit="`/schedules/${schedule.id}`" />
       </v-card-title>
       <v-card-subtitle>
         {{ schedule.active ? 'Schedule active' : 'Schedule inactive' }}
