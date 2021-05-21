@@ -176,6 +176,22 @@
               <v-btn> Saturday</v-btn>
             </v-btn-toggle>
           </v-row>
+          <v-row justify="space-around" align="center" class="my-6">
+            <v-col cols="12">
+              <h2 class="text-center">
+                Exclude Days Of Week <v-icon>mdi-help-circle-outline</v-icon>
+              </h2>
+            </v-col>
+            <v-btn-toggle v-model="excludedDays" multiple>
+              <v-btn> Sunday</v-btn>
+              <v-btn> Monday</v-btn>
+              <v-btn> Tuesday</v-btn>
+              <v-btn> Wednesday</v-btn>
+              <v-btn> Thursday</v-btn>
+              <v-btn> Friday</v-btn>
+              <v-btn> Saturday</v-btn>
+            </v-btn-toggle>
+          </v-row>
         </v-card>
         <v-btn color="primary" @click="e1 = 2"> Continue </v-btn>
         <v-btn text> Cancel </v-btn>
@@ -213,21 +229,16 @@
             <v-btn @click="addTopic">Add Topic</v-btn>
             <v-list>
               <v-list-item v-for="(item, index) in topics" :key="index">
-                <v-list-item-title> {{ item.name }} </v-list-item-title>
                 <v-list-item-content>
+                  {{ item.name }}
                   Sessions Per Week: {{ item.sessions }}
-                  <v-btn @click="item.sessions += 1">
-                    <v-icon small>mdi-plus</v-icon>
-                  </v-btn>
-                  <v-btn
-                    @click="
-                      if (item.sessions > 0) {
-                        item.sessions -= 1
-                      }
-                    "
+                  <v-btn @click="item.sessions += 1"
+                    ><v-icon>mdi-plus</v-icon></v-btn
                   >
-                    <v-icon small>mdi-minus</v-icon>
-                  </v-btn>
+                  <v-btn @click="item.sessions -= 1"
+                    ><v-icon>mdi-minus</v-icon></v-btn
+                  >
+                  <v-spacer></v-spacer>
                 </v-list-item-content>
               </v-list-item>
             </v-list>
@@ -271,7 +282,7 @@
                       v-for="(color, index) in $store.state.colors"
                       :key="index"
                     >
-                      <v-btn> {{ color }} </v-btn>
+                      <v-btn :value="color"> {{ color }} </v-btn>
                     </v-list-item>
                     <v-list-item>
                       <v-list-item-title> Custome </v-list-item-title>
@@ -284,9 +295,7 @@
           <v-slider
             v-model="lengthOfSession"
             class="align-center my-5"
-            :max="
-              parseInt(endTime.split(':')[0]) - parseInt(startTime.split(':'))
-            "
+            :max="8"
             :min="1"
             hide-details
             :label="`Length Of Sessions: ${lengthOfSession} Hours`"
@@ -319,7 +328,8 @@
       </v-stepper-content>
       <v-stepper-content step="5">
         <v-card class="mb-12">
-          <v-btn @click="generateRevision">Generate Revision</v-btn>
+          <v-btn @click="generateSchedule">Generate Schedule</v-btn>
+          <v-btn @click="saveSchedule">Save</v-btn>
         </v-card>
 
         <v-btn color="primary" @click="e1 = 4"> Back </v-btn>
@@ -331,6 +341,7 @@
 </template>
 
 <script>
+/* eslint-disable no-console */
 import CreateEvent from '../Events/CreateEvent.vue'
 import EventCard from '../Events/EventCard.vue'
 export default {
@@ -345,32 +356,169 @@ export default {
       endDateMenu: false,
       sessionsPerWeek: 0,
       lengthOfSession: 0,
-      startTime: new Date().toTimeString().substr(0, 5),
-      endTime: new Date(new Date().setHours(new Date().getHours() + 1))
-        .toTimeString()
-        .substr(0, 5),
+      startTime: null,
+      endTime: null,
       startTimeMenu: false,
       endTimeMenu: false,
       topic: '',
       topics: [],
       daysOfWeek: [],
+      excludedDays: [],
       userEvents: [],
       repeatFrequency: 0,
-      scheduleColor: null,
+      scheduleColor: 'blue',
+      scheduleEvents: [],
     }
   },
   methods: {
-    generateRevision() {},
+    saveSchedule() {
+      const schedule = {
+        title: this.title,
+        start: this.startDate,
+        end: this.endDate,
+        active: true,
+        schedulegroupid: 1,
+        priority: 1,
+      }
+      const payload = {
+        schedule,
+        events: this.scheduleEvents,
+      }
+      console.log(payload)
+      this.$store.commit('ADD_SCHEDULE', payload)
+    },
+    randomRange(min, max) {
+      return Math.floor((max - min + 1) * Math.random() + min)
+    },
+    getScheduleWeeks() {
+      const scheduleWeeks = []
+      const dayCounter = new Date(this.startDate)
+
+      const scheduleStartDate = new Date(this.startDate)
+      const scheduleEndDate = new Date(this.endDate)
+
+      // Weeks are calculated based on the week of the day the schedule started
+      const weekStartDay = scheduleStartDate.getDay()
+      const weekEndDay = weekStartDay - 1
+
+      let weekStartDate = new Date(scheduleStartDate)
+      while (dayCounter.getTime() <= scheduleEndDate.getTime()) {
+        dayCounter.setDate(dayCounter.getDate() + 1)
+
+        if (dayCounter.getDay() === weekEndDay) {
+          scheduleWeeks.push({
+            startDate: weekStartDate.toString(),
+            endDate: dayCounter.toString(),
+            startDay: weekStartDate.getDay(),
+            endDay: dayCounter.getDay(),
+          })
+          weekStartDate = new Date(dayCounter.getTime())
+          // Sets the start date of the next week
+          weekStartDate.setDate(weekStartDate.getDate() + 1)
+        } else if (
+          scheduleEndDate.getDate() - weekStartDate.getDate() < 7 &&
+          dayCounter.getTime() === scheduleEndDate.getTime()
+        ) {
+          // joins any days that don't form a full week (7) into a seperate week
+          scheduleWeeks.push({
+            startDate: weekStartDate.toString(),
+            endDate: scheduleEndDate.toString(),
+            startDay: weekStartDate.getDay(),
+            endDay: scheduleEndDate.getDay(),
+          })
+        }
+      }
+      return scheduleWeeks
+    },
+    getWeekEventDays(week) {
+      let sessionsPlaced = 0
+      const eventDays = []
+      while (sessionsPlaced < this.sessionsPerWeek) {
+        let startDay = week.startDay
+        if (week.startDay > week.endDay) {
+          startDay = week.startDay - 7
+        }
+        let weekDay = this.randomRange(startDay, week.endDay)
+
+        if (weekDay < 0) {
+          weekDay += 7
+        }
+
+        const sessionNum = Math.abs(this.randomRange(-2, 1))
+        if (sessionsPlaced + sessionNum <= this.sessionsPerWeek) {
+          const dayIndex = eventDays.findIndex((event) => event.day === weekDay)
+          if (dayIndex === -1) {
+            eventDays.push({
+              day: weekDay,
+              sessionNum,
+            })
+            sessionsPlaced += sessionNum
+          } else {
+            eventDays[dayIndex].sessionNum += sessionNum
+            sessionsPlaced += sessionNum
+          }
+        }
+      }
+      console.log(eventDays)
+      return eventDays
+    },
+    moveToDate(date, day) {
+      const dayCounter = new Date(date)
+      while (dayCounter.getDay() !== day) {
+        dayCounter.setDate(dayCounter.getDate() + 1)
+      }
+      return dayCounter
+    },
+
+    generateSchedule() {
+      let dayCounter = new Date(this.startDate)
+      const startHour = this.startTime.split(':')[0]
+      const endHour = this.endTime.split(':')[0]
+      const scheduleEvents = []
+
+      const scheduleWeeks = this.getScheduleWeeks()
+      console.log(scheduleWeeks)
+
+      scheduleWeeks.forEach((week) => {
+        const eventDays = this.getWeekEventDays(week)
+        eventDays.forEach((eventDay) => {
+          dayCounter = this.moveToDate(week.startDate, eventDay.day)
+          for (let i = 0; i < eventDay.sessionNum; i++) {
+            const startTime = this.randomRange(startHour, endHour)
+            const endTime = startTime + this.lengthOfSession
+            const eventStart = new Date(dayCounter)
+            const eventEnd = new Date(dayCounter)
+
+            eventStart.setHours(startTime)
+            eventEnd.setHours(endTime)
+
+            scheduleEvents.push({
+              name: this.title,
+              start: eventStart,
+              end: eventEnd,
+              color: this.scheduleColor,
+              timed: true,
+            })
+          }
+        })
+      })
+      this.$emit('scheduleCreated', scheduleEvents)
+      this.scheduleEvents = scheduleEvents
+    },
+    getStartOfWorkWeek(date) {
+      // could be refined
+      const currentDay = date
+      while (currentDay.getDay() !== 0) {
+        currentDay.setDate(currentDay.getDate() - 1)
+      }
+      return currentDay
+    },
     addTopic() {
       this.topics.push({
         name: this.topic,
         sessions: 0,
       })
       this.topic = ''
-    },
-    log(i, e) {
-      // eslint-disable-next-line no-console
-      console.log(i, e)
     },
   },
 }

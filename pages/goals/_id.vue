@@ -16,6 +16,7 @@
         <attendance-card :events="events" />
       </v-col>
     </v-row>
+    <milestone-timeline />
   </div>
 </template>
 
@@ -24,8 +25,15 @@ import AttendanceCard from '~/components/AttendanceCard.vue'
 import Calendar from '~/components/Calendar.vue'
 import UpcomingEventsCard from '~/components/Events/UpcomingEventsCard.vue'
 import GoalCard from '~/components/Goals/GoalCard.vue'
+import MilestoneTimeline from '~/components/Goals/MilestoneTimeline.vue'
 export default {
-  components: { GoalCard, Calendar, UpcomingEventsCard, AttendanceCard },
+  components: {
+    GoalCard,
+    Calendar,
+    UpcomingEventsCard,
+    AttendanceCard,
+    MilestoneTimeline,
+  },
   computed: {
     goal() {
       return this.$store.getters.getGoalById(this.$route.params.id)

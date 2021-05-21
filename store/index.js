@@ -181,6 +181,48 @@ const state = () => ({
     'orange',
     'grey darken-1',
   ],
+  milestones: [
+    {
+      id: 1,
+      title: 'Close to finishsing project',
+      date: '2021-05-21T18:01:00',
+      description:
+        'This is not a feature that is required. So why am I procrastinating and adding it when I could be doing more productive things',
+      goalid: 1,
+    },
+    {
+      id: 2,
+      title: 'I need a better way of seeding data',
+      date: '2021-05-22T18:01:00',
+      description:
+        'This is not a feature that is required. So why am I procrastinating and adding it when I could be doing more productive things',
+      goalid: 1,
+    },
+    {
+      id: 3,
+      title: 'I have no accomplishments',
+      date: '2021-05-23T18:01:00',
+      description:
+        'This is not a feature that is required. So why am I procrastinating and adding it when I could be doing more productive things',
+      goalid: 1,
+    },
+    {
+      id: 4,
+      title: 'This is just seed data',
+      date: '2021-05-24T18:01:00',
+      description:
+        'This is not a feature that is required. So why am I procrastinating and adding it when I could be doing more productive things',
+      goalid: 1,
+    },
+    {
+      id: 5,
+      title: 'I wonder what goal this is tied to',
+      date: '2021-05-25T18:01:00',
+      description:
+        'I think it may be Write a story. This is not a feature that is required. So why am I procrastinating and adding it when I could be doing more productive things',
+      goalid: 1,
+    },
+  ],
 })
 
 const getters = {
@@ -256,12 +298,34 @@ const actions = {
       resolve()
     })
   },
+  addNewSchedule({ state, commit }, payload) {
+    return new Promise((resolve, reject) => {
+      commit('ADD_SCHEDULE', payload)
+      resolve()
+    })
+  },
 }
 
 const mutations = {
   SET_ATTENDED(state, payload) {
     const event = state.attendance.find((event) => event.eventid === payload.id)
     event.did_attend = payload.data
+  },
+  ADD_SCHEDULE(state, payload) {
+    const currentScheduleId = Math.max(
+      ...state.schedules.map((schedule) => schedule.id)
+    )
+    let currentEventId = Math.max(...state.events.map((event) => event.id))
+    const events = payload.events
+    delete payload.events
+    payload.schedule.id = currentScheduleId + 1
+    state.schedules.push(payload.schedule)
+    events.forEach((event) => {
+      currentEventId += 1
+      event.scheduleid = payload.schedule.id
+      event.id = currentEventId
+      state.events.push(event)
+    })
   },
 }
 

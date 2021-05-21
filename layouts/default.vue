@@ -71,6 +71,11 @@ export default {
           title: 'Goals',
           to: '/goals',
         },
+        {
+          icon: 'mdi-notebook',
+          title: 'Schedules',
+          to: '/schedules',
+        },
       ],
       miniVariant: false,
       title: 'LifeSchedule',
