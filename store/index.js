@@ -248,13 +248,7 @@ const getters = {
     return state.schedulegroups.find((group) => group.id === parseInt(id))
   },
   getScheduleEvents: (state) => (id) => {
-    const events = []
-    state.events.forEach((event) => {
-      if (event.scheduleid === parseInt(id)) {
-        events.push(event)
-      }
-    })
-    return events
+    return state.events.filter((event) => event.scheduleid === parseInt(id))
   },
   getActiveRevisionScheduleEvents: (state) => () => {
     const allEvents = []
@@ -288,6 +282,11 @@ const getters = {
   },
   getColors: (state) => {
     return state.colors
+  },
+  getGoalMilestones: (state) => (id) => {
+    return state.milestones.filter(
+      (milestone) => milestone.goalid === parseInt(id)
+    )
   },
 }
 
@@ -326,6 +325,22 @@ const mutations = {
       event.id = currentEventId
       state.events.push(event)
     })
+  },
+  ADD_MILESTONE(state, payload) {
+    const currentMilestoneId = Math.max(
+      ...state.milestones.map((milestone) => milestone.id)
+    )
+    payload.id = currentMilestoneId + 1
+    state.milestones.push(payload)
+  },
+  DEL_MILESTONE(state, id) {
+    const index = state.milestones.findIndex((milestone) => milestone.id === id)
+    state.milestones.splice(index, 1)
+  },
+  ADD_EVENT(state, payload) {
+    const currentEventId = Math.max(...state.events.map((event) => event.id))
+    payload.id = currentEventId + 1
+    state.events.push(payload)
   },
 }
 

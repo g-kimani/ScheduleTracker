@@ -16,7 +16,7 @@
         <attendance-card :events="events" />
       </v-col>
     </v-row>
-    <milestone-timeline />
+    <milestone-timeline :id="parseInt($route.params.id)" />
   </div>
 </template>
 

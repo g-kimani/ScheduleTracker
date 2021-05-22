@@ -1,7 +1,21 @@
 <template>
   <div>
     <v-card>
-      <v-card-title> Today's Schedule</v-card-title>
+      <v-card-title>
+        Today's Schedule <v-spacer></v-spacer>
+        <v-dialog
+          v-model="addEventDialog"
+          transition="dialog-bottom-transition"
+        >
+          <template #activator="{ on, attrs }">
+            <v-btn fab dark small color="indigo" v-bind="attrs" v-on="on"
+              ><v-icon>mdi-plus</v-icon></v-btn
+            ></template
+          >
+          <create-event @eventCreated="addEvent($event)" />
+        </v-dialog>
+      </v-card-title>
+
       <div v-if="daySchedule.length > 0">
         <v-timeline dense>
           <v-timeline-item
@@ -19,10 +33,17 @@
 </template>
 
 <script>
+/* eslint-disable no-console */
 import { mapState } from 'vuex'
+import CreateEvent from '../Events/CreateEvent.vue'
 import EventCard from '../Events/EventCard.vue'
 export default {
-  components: { EventCard },
+  components: { EventCard, CreateEvent },
+  data() {
+    return {
+      addEventDialog: false,
+    }
+  },
   computed: {
     ...mapState(['events']),
     daySchedule() {
@@ -32,7 +53,9 @@ export default {
           schedule.push(event)
         }
       })
-      return schedule
+      return schedule.sort(
+        (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime()
+      )
     },
   },
   methods: {
@@ -44,6 +67,11 @@ export default {
         today.getMonth() === checkDate.getMonth() &&
         today.getDate() === checkDate.getDate()
       )
+    },
+    addEvent(event) {
+      this.addEventDialog = false
+      this.$store.commit('ADD_EVENT', event)
+      console.log(event)
     },
   },
 }

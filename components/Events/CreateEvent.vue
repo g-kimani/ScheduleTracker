@@ -2,128 +2,130 @@
   <div>
     <v-card>
       <v-card-title> Create Event </v-card-title>
-      <v-container>
-        <v-text-field v-model="name" label="Title"></v-text-field>
-        <v-row>
-          <v-col>
-            <v-menu
-              v-model="startDateMenu"
-              :close-on-content-click="false"
-              :nudge-right="40"
-              transition="scale-transition"
-              offset-y
-              min-width="auto"
-            >
-              <template #activator="{ on, attrs }">
-                <v-text-field
+      <v-form ref="form">
+        <v-container>
+          <v-text-field v-model="name" label="Title"></v-text-field>
+          <v-row>
+            <v-col>
+              <v-menu
+                v-model="startDateMenu"
+                :close-on-content-click="false"
+                :nudge-right="40"
+                transition="scale-transition"
+                offset-y
+                min-width="auto"
+              >
+                <template #activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="startDate"
+                    label="Start Date"
+                    prepend-icon="mdi-calendar"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-date-picker
                   v-model="startDate"
-                  label="Start Date"
-                  prepend-icon="mdi-calendar"
-                  readonly
-                  v-bind="attrs"
-                  v-on="on"
-                ></v-text-field>
-              </template>
-              <v-date-picker
-                v-model="startDate"
-                @input="startDateMenu = false"
-              ></v-date-picker>
-            </v-menu>
-          </v-col>
-          <v-col>
-            <v-menu
-              v-model="endDateMenu"
-              :close-on-content-click="false"
-              :nudge-right="40"
-              transition="scale-transition"
-              offset-y
-              min-width="auto"
-            >
-              <template #activator="{ on, attrs }">
-                <v-text-field
+                  @input="startDateMenu = false"
+                ></v-date-picker>
+              </v-menu>
+            </v-col>
+            <v-col>
+              <v-menu
+                v-model="endDateMenu"
+                :close-on-content-click="false"
+                :nudge-right="40"
+                transition="scale-transition"
+                offset-y
+                min-width="auto"
+              >
+                <template #activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="endDate"
+                    label="End Date"
+                    prepend-icon="mdi-calendar"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-date-picker
                   v-model="endDate"
-                  label="End Date"
-                  prepend-icon="mdi-calendar"
-                  readonly
-                  v-bind="attrs"
-                  v-on="on"
-                ></v-text-field>
-              </template>
-              <v-date-picker
-                v-model="endDate"
-                @input="endDateMenu = false"
-              ></v-date-picker>
-            </v-menu>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col>
-            <v-menu
-              ref="startTimeRef"
-              v-model="startTimeMenu"
-              :close-on-content-click="false"
-              :nudge-right="40"
-              :return-value.sync="startTime"
-              transition="scale-transition"
-              offset-y
-              max-width="290px"
-              min-width="290px"
-            >
-              <template #activator="{ on, attrs }">
-                <v-text-field
+                  @input="endDateMenu = false"
+                ></v-date-picker>
+              </v-menu>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-menu
+                ref="startTimeRef"
+                v-model="startTimeMenu"
+                :close-on-content-click="false"
+                :nudge-right="40"
+                :return-value.sync="startTime"
+                transition="scale-transition"
+                offset-y
+                max-width="290px"
+                min-width="290px"
+              >
+                <template #activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="startTime"
+                    label="Start Time"
+                    prepend-icon="mdi-clock-time-four-outline"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-time-picker
+                  v-if="startTimeMenu"
                   v-model="startTime"
-                  label="Start Time"
-                  prepend-icon="mdi-clock-time-four-outline"
-                  readonly
-                  v-bind="attrs"
-                  v-on="on"
-                ></v-text-field>
-              </template>
-              <v-time-picker
-                v-if="startTimeMenu"
-                v-model="startTime"
-                full-width
-                :max="endTime"
-                @click:minute="$refs.startTimeRef.save(startTime)"
-              ></v-time-picker>
-            </v-menu>
-          </v-col>
-          <v-col>
-            <v-menu
-              ref="endTimeRef"
-              v-model="endTimeMenu"
-              :close-on-content-click="false"
-              :nudge-right="40"
-              :return-value.sync="endTime"
-              transition="scale-transition"
-              offset-y
-              max-width="290px"
-              min-width="290px"
-            >
-              <template #activator="{ on, attrs }">
-                <v-text-field
+                  full-width
+                  :max="endTime"
+                  @click:minute="$refs.startTimeRef.save(startTime)"
+                ></v-time-picker>
+              </v-menu>
+            </v-col>
+            <v-col>
+              <v-menu
+                ref="endTimeRef"
+                v-model="endTimeMenu"
+                :close-on-content-click="false"
+                :nudge-right="40"
+                :return-value.sync="endTime"
+                transition="scale-transition"
+                offset-y
+                max-width="290px"
+                min-width="290px"
+              >
+                <template #activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="endTime"
+                    label="End Time"
+                    prepend-icon="mdi-clock-time-four-outline"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-time-picker
+                  v-if="endTimeMenu"
                   v-model="endTime"
-                  label="End Time"
-                  prepend-icon="mdi-clock-time-four-outline"
-                  readonly
-                  v-bind="attrs"
-                  v-on="on"
-                ></v-text-field>
-              </template>
-              <v-time-picker
-                v-if="endTimeMenu"
-                v-model="endTime"
-                full-width
-                :min="startTime"
-                @click:minute="$refs.endTimeRef.save(endTime)"
-              ></v-time-picker>
-            </v-menu>
-          </v-col>
-        </v-row>
-      </v-container>
+                  full-width
+                  :min="startTime"
+                  @click:minute="$refs.endTimeRef.save(endTime)"
+                ></v-time-picker>
+              </v-menu>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-form>
       <v-card-actions>
         <v-btn @click="addEvent">Add</v-btn>
-        <v-btn @click="clear">Clear</v-btn>
+        <v-btn @click="$refs.form.reset()">Clear</v-btn>
       </v-card-actions>
     </v-card>
   </div>
