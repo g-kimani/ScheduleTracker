@@ -22,28 +22,38 @@
               {{ $refs.calendar.title }}
             </v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-menu bottom right>
-              <template #activator="{ on, attrs }">
-                <v-btn outlined color="grey darken-2" v-bind="attrs" v-on="on">
-                  <span>{{ typeToLabel[type] }}</span>
-                  <v-icon right> mdi-menu-down </v-icon>
-                </v-btn>
+            <v-select
+              v-model="selected"
+              :items="scheduleList"
+              label="Filter Schedules"
+              multiple
+              dense
+              style="max-width: 200px"
+            >
+              <template #prepend-item>
+                <v-list-item ripple @click="toggle">
+                  <v-list-item-action>
+                    <v-icon
+                      :color="selected.length > 0 ? 'indigo darken-2' : ''"
+                    >
+                      {{ icon }}
+                    </v-icon>
+                  </v-list-item-action>
+                  <v-list-item-content>
+                    <v-list-item-title> Select All </v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+                <v-divider class="mt-2"></v-divider>
               </template>
-              <v-list>
-                <v-list-item @click="type = 'day'">
-                  <v-list-item-title>Day</v-list-item-title>
-                </v-list-item>
-                <v-list-item @click="type = 'week'">
-                  <v-list-item-title>Week</v-list-item-title>
-                </v-list-item>
-                <v-list-item @click="type = 'month'">
-                  <v-list-item-title>Month</v-list-item-title>
-                </v-list-item>
-                <v-list-item @click="type = '4day'">
-                  <v-list-item-title>4 days</v-list-item-title>
-                </v-list-item>
-              </v-list>
-            </v-menu>
+              <template #selection="{ item, index }">
+                <v-chip v-if="index === 0">
+                  <span>{{ item.text }}</span>
+                </v-chip>
+                <span v-if="index === 1" class="grey--text caption">
+                  (+{{ selected.length - 1 }} others)
+                </span>
+              </template>
+            </v-select>
           </v-toolbar>
         </v-sheet>
         <v-sheet height="600">
@@ -51,7 +61,7 @@
             ref="calendar"
             v-model="focus"
             color="primary"
-            :events="events"
+            :events="filteredEvents"
             :event-color="getEventColor"
             :type="type"
             @click:event="showEvent"
@@ -66,9 +76,10 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   props: {
-    events: {
+    schedulePresets: {
       type: Array,
       default() {
         return []
@@ -77,6 +88,7 @@ export default {
   },
   data() {
     return {
+      selected: [],
       focus: '',
       type: 'month',
       typeToLabel: {
@@ -90,7 +102,57 @@ export default {
       selectedOpen: false,
     }
   },
+  computed: {
+    ...mapState(['schedules', 'events']),
+    filteredEvents() {
+      return this.events.filter(
+        (event) =>
+          this.selected.findIndex(
+            (selection) => selection === event.scheduleid
+          ) !== -1
+      )
+    },
+    scheduleList() {
+      const list = []
+      this.schedules.forEach((schedule) => {
+        list.push({
+          text: schedule.title,
+          value: schedule.id,
+        })
+      })
+      return list
+    },
+    icon() {
+      if (this.selected.length === this.scheduleList.length)
+        return 'mdi-close-box'
+      if (this.selected.length > 0) return 'mdi-minus-box'
+      return 'mdi-checkbox-blank-outline'
+    },
+  },
+  mounted() {
+    this.generatePreset()
+  },
   methods: {
+    generatePreset() {
+      if (this.schedulePresets.length > 0) {
+        this.schedulePresets.forEach((preset) => this.selected.push(preset))
+      } else {
+        const list = []
+        this.schedules.forEach((schedule) => {
+          list.push(schedule.id)
+        })
+        this.selected = list
+      }
+    },
+    toggle() {
+      this.$nextTick(() => {
+        if (this.selected.length === this.scheduleList.length) {
+          this.selected = []
+        } else {
+          this.selected = this.scheduleList.map((schedule) => schedule.value)
+        }
+      })
+    },
     viewDay({ date }) {
       this.focus = date
       this.type = 'day'

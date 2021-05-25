@@ -2,7 +2,7 @@
   <div>
     <v-row>
       <v-col cols="4">
-        <upcoming-events-card :events="events" />
+        <day-schedule />
       </v-col>
       <v-col cols="8">
         <calendar :events="events" />
@@ -16,14 +16,12 @@
         <goal-card v-for="goal in goals" :key="goal.id" :goal="goal" />
       </v-col>
     </v-row>
-    <day-schedule />
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
 import Calendar from '~/components/Calendar.vue'
-import UpcomingEventsCard from '~/components/Events/UpcomingEventsCard.vue'
 import GoalCard from '~/components/Goals/GoalCard.vue'
 import DaySchedule from '~/components/Schedules/DaySchedule.vue'
 import SchedulesTabs from '~/components/Schedules/SchedulesTabs.vue'
@@ -32,7 +30,6 @@ export default {
     Calendar,
     SchedulesTabs,
     GoalCard,
-    UpcomingEventsCard,
     DaySchedule,
   },
   data() {

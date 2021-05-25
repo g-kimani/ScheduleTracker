@@ -5,7 +5,7 @@
         <active-schedules-card :schedules="activeSchedules" />
       </v-col>
       <v-col>
-        <calendar :events="revisionEvents" />
+        <calendar :schedule-presets="activeSchedules.map((a) => a.id)" />
       </v-col>
     </v-row>
     <v-row>

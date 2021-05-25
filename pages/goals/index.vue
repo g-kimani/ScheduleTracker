@@ -19,6 +19,7 @@
     <v-row>
       <attendance-card :events="goalEvents" />
     </v-row>
+    <v-btn to="/filter">Filter</v-btn>
   </div>
 </template>
 

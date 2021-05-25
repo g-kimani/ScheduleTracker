@@ -5,7 +5,7 @@
         <goal-card :goal="goal" />
       </v-col>
       <v-col>
-        <calendar :events="events" />
+        <calendar :schedule-presets="[parseInt($route.params.id)]" />
       </v-col>
     </v-row>
     <v-row>

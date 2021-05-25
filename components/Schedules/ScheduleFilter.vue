@@ -1,28 +1,5 @@
 <template>
-  <div class="text-center">
-    <v-menu offset-y>
-      <template #activator="{ on, attrs }">
-        <v-btn color="primary" dark v-bind="attrs" v-on="on">
-          {{ picked.length === 1 ? schedules[0].title : 'Filter Schedules' }}
-        </v-btn>
-      </template>
-      <v-checkbox
-        v-for="schedule in schedules"
-        :key="schedule.id"
-        v-model="picked"
-        :label="schedule.title"
-        :value="schedule.id"
-      ></v-checkbox>
-    </v-menu>
-    <v-col cols="12">
-      <v-combobox
-        v-model="selected"
-        :items="scheduleList"
-        label="Filter Schedules"
-        multiple
-        chips
-      ></v-combobox>
-    </v-col>
+  <div>
     <v-select
       v-model="selected"
       :items="scheduleList"
@@ -69,7 +46,6 @@ export default {
   },
   data() {
     return {
-      picked: [],
       selected: [],
     }
   },
@@ -98,6 +74,11 @@ export default {
         return 'mdi-close-box'
       if (this.selected.length > 0) return 'mdi-minus-box'
       return 'mdi-checkbox-blank-outline'
+    },
+  },
+  watch: {
+    filteredEvents() {
+      this.$emit('filtered', this.filteredEvents)
     },
   },
   mounted() {

@@ -23,7 +23,22 @@
             :key="i"
             :color="event.color"
           >
-            <event-card :event="event" />
+            <v-row class="pt-1">
+              <v-col>
+                <strong
+                  >{{
+                    new Date(event.start)
+                      .toLocaleTimeString('en-GB')
+                      .substr(0, 5)
+                  }}-{{
+                    new Date(event.end).toLocaleTimeString('en-GB').substr(0, 5)
+                  }}</strong
+                >
+              </v-col>
+              <v-col>
+                {{ event.name }}
+              </v-col>
+            </v-row>
           </v-timeline-item>
         </v-timeline>
       </div>
@@ -36,9 +51,8 @@
 /* eslint-disable no-console */
 import { mapState } from 'vuex'
 import CreateEvent from '../Events/CreateEvent.vue'
-import EventCard from '../Events/EventCard.vue'
 export default {
-  components: { EventCard, CreateEvent },
+  components: { CreateEvent },
   data() {
     return {
       addEventDialog: false,

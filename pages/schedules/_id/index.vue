@@ -10,7 +10,7 @@
         </v-row>
       </v-col>
       <v-col cols="6">
-        <calendar :events="events" />
+        <calendar :schedule-presets="[parseInt($route.params.id)]" />
       </v-col>
     </v-row>
     <v-row>
